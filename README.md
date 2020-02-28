@@ -57,8 +57,29 @@ hostapd /etc/hostapd/hostapd.conf
 
 ```sudo chmod 667 /usr/local/bin/hostapdstart```
 
-8- Type ```hostapdstart``` to start the access point or run it at startup by adding this line to the /etc/rc.local:
+8- Type ```sudo hostapdstart``` to start the access point or run it at startup by adding this line to the /etc/rc.local:
 
-```hostapdstart >1&```
+```sudo hostapdstart >1&```
 
 
+
+
+Note 1:
+On Raspian Desktop version network should be restarted after adding uap0:
+```
+iw dev wlan0 interface add uap0 type __ap
+/etc/init.d/networking restart
+service dnsmasq restart
+sysctl net.ipv4.ip_forward=1
+iptables -t nat -A POSTROUTING -s 192.168.2.0/24 ! -d 192.168.2.0/24 -j MASQUERADE
+ifup uap0
+hostapd /etc/hostapd/hostapd.conf
+```
+
+Note 2:
+To have ```nodejs``` server listening to UDP packets, ```node``` , ```npm``` , and ```websocket``` should be installed:
+```
+sudo apt update
+sudo apt install nodejs npm
+npm install websocket
+```
